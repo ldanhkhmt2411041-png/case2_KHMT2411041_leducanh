@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
+import '../tasks/task_list_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -30,8 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (result['success']) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Dang nhap thanh cong!')),
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TaskListScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
