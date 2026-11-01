@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', require('./src/routes/authRoutes'));
+app.use('/api/tasks', require('./src/routes/taskRoutes'));
 
 app.get('/', (req, res) => {
   res.send('API TaskManager dang hoat dong!');
