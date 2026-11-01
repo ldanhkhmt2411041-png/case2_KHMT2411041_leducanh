@@ -6,11 +6,18 @@ import '../models/task.dart';
 class TaskService {
   static const String baseUrl = 'http://localhost:5000/api/tasks';
 
-  static Future<List<Task>> getTasks() async {
+  static Future<List<Task>> getTasks({String? status, String? priority, String? q}) async {
     try {
       final token = await AuthService.getToken();
+      final queryParams = <String, String>{};
+      if (status != null && status.isNotEmpty) queryParams['status'] = status;
+      if (priority != null && priority.isNotEmpty) queryParams['priority'] = priority;
+      if (q != null && q.isNotEmpty) queryParams['q'] = q;
+
+      final uri = Uri.parse(baseUrl).replace(queryParameters: queryParams.isEmpty ? null : queryParams);
+
       final response = await http.get(
-        Uri.parse(baseUrl),
+        uri,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -45,6 +52,23 @@ class TaskService {
         }),
       );
       return response.statusCode == 201;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> updateTask(String taskId, Map<String, dynamic> data) async {
+    try {
+      final token = await AuthService.getToken();
+      final response = await http.put(
+        Uri.parse('$baseUrl/$taskId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(data),
+      );
+      return response.statusCode == 200;
     } catch (e) {
       return false;
     }
